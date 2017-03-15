@@ -36,7 +36,7 @@ var uploadToElastic = function (items) {
     }
 };
 
-function fetchWaitingtimes() {
+function fetchWaitingTimes() {
     request('http://www.universalstudioshollywood.com/waittimes/?type=all&site=USH', function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var upload = [];
@@ -84,7 +84,7 @@ function searchTest(searchterm, callback) {
 var wait = 60000
 var waitTimer = function () {
     setInterval(function () {
-        fetchWaitingtimes();
+        fetchWaitingTimes();
     }, wait)
 };
 
@@ -96,7 +96,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/search', function (req, res) {  
+app.get('/search', function (req, res) { 
+  fetchWaitingTimes(); 
   searchTest(req.query.q, function(result) {
     res.send(result);
   });
