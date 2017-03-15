@@ -10,20 +10,30 @@ var client = new elasticsearch.Client({
     log: 'info'
 });
 
+client.ping({
+  requestTimeout: 5000
+}, function (error) {
+  if (error) {
+	console.trace('elasticsearch cluster is down!');
+} else{
+	console.log('All is well');
+}
+});  
+
 var uploadToElastic = function (items) {
     for (var i = 0; i < items.length; ++i) {
         client.create({
-            index: 'cs',
+            index: 'data',
             type: 'waitTime',
             id: uuid(),
             body: items[i]
         }, function (error, response) {
-            if (error) {
-                console.error(error);
-            }
-        });
+		if(error) {
+			console.log(error);
+		}
+		console.log("UPLOADED DATA")
+        })
     }
-    console.log("UPLOADED DATA");
 };
 
 function fetchWaitingtimes() {
@@ -36,8 +46,8 @@ function fetchWaitingtimes() {
                     var ride = JSON.stringify(items[i].description[0]);
                     if (items[i].title[0] !== 'Last updated' && ride.match(/[APap][mM]/)) {
                         upload.push({
-                            'time': Date.now(),
-                            'title': items[i].title[0],
+                            'timeStamp': Date.now(),
+                            'rideName': items[i].title[0],
                             'waittime': items[i].description[0]
                         });
                     }
@@ -48,9 +58,52 @@ function fetchWaitingtimes() {
     })
 }
 
+
+
+function searchTest(searchterm, callback) {
+  client.search({
+    index: '499-books',  
+    body: {
+      "query": {
+        "bool": {
+          "must": {
+            "match": {
+              "keywords": searchterm
+            }
+          }
+        }
+      }
+    }
+  }, function (error, response) {
+    console.log(response);
+    if (callback) {
+      callback(response);
+    }
+  });
+}
+			
+
 var wait = 600000
 var waitTimer = function () {
     setInterval(function () {
         fetchWaitingtimes();
     }, wait)
 };
+
+var app = express()
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.get('/search', function (req, res) {  
+  searchTest(req.query.q, function(result) {
+    res.send(result);
+  });
+})
+
+app.listen(3000, function () {
+  console.log('Data app listening on port 3000!')
+})
