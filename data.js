@@ -1,8 +1,8 @@
+var elasticsearch = require('elasticsearch');
+var express = require('express');
 var request = require('request');
 var parseString = require('xml2js').parseString;
-var express = require('express')
 var uuid = require('uuid/v1');
-var elasticsearch = require('elasticsearch');
 
 
 var client = new elasticsearch.Client({
@@ -83,7 +83,7 @@ function searchTest(searchterm, callback) {
 }
 			
 
-var wait = 600000
+var wait = 60000
 var waitTimer = function () {
     setInterval(function () {
         fetchWaitingtimes();
