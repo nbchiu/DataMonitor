@@ -43,14 +43,11 @@ function fetchWaitingtimes() {
             parseString(body, function (err, result) {
                 var items = result.rss.channel[0].item;
                 for (var i = 0; i < items.length; ++i) {
-                    var ride = JSON.stringify(items[i].description[0]);
-                    if (items[i].title[0] !== 'Last updated' && ride.match(/[APap][mM]/)) {
-                        upload.push({
-                            'timeStamp': Date.now(),
-                            'rideName': items[i].title[0],
-                            'waittime': items[i].description[0]
-                        });
-                    }
+                    upload.push({
+                       'timeStamp': Date.now(),
+                       'rideName': items[i].title[0],
+                       'waittime': items[i].description[0]
+                    });
                 }
             });
             uploadToElastic(upload);
