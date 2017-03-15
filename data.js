@@ -54,15 +54,16 @@ function fetchWaitingtimes() {
                 }
             });
             uploadToElastic(upload);
-        }
+        } else {
+		console.log(error);
+	}
     })
 }
 
 
-
 function searchTest(searchterm, callback) {
   client.search({
-    index: '499-books',  
+    index: 'data',  
     body: {
       "query": {
         "bool": {
