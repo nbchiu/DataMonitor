@@ -46,7 +46,7 @@ function fetchWaitingtimes() {
                     upload.push({
                        'timeStamp': Date.now(),
                        'rideName': items[i].title[0],
-                       'waittime': items[i].description[0]
+                       'description': items[i].description[0]
                     });
                 }
             });
