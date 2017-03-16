@@ -104,5 +104,6 @@ app.get('/search', function (req, res) {
 })
 
 app.listen(3000, function () {
+  fetchWaitingTimes();
   console.log('Data app listening on port 3000!')
 })
